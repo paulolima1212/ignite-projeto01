@@ -1,0 +1,29 @@
+@use './colors.scss' as c;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  list-style: none;
+  text-decoration: none;
+  // font-size: 62.5%;
+}
+
+:focus {
+  outline: transparent;
+  box-shadow: 0 0 0 2px c.$green-300;
+  border-radius: 4px;
+}
+
+body {
+  background: c.$gray-800;
+}
+
+body,
+a,
+button,
+input,
+textarea {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1rem;
+}
