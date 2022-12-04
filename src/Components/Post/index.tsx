@@ -4,11 +4,12 @@ import { Post as PostType } from './post';
 import style from './styles.module.scss';
 
 import { format, formatDistanceToNow } from 'date-fns';
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, InvalidEvent, useRef, useState } from 'react';
 
 export function Post({ author, content, publishedAt }: PostType) {
   const [newComment, setNewComment] = useState('');
   const [comments, setComments] = useState<CommentType[]>([]);
+  const textComment = useRef<HTMLTextAreaElement>(null);
 
   const datePostFormatted = format(publishedAt, 'd LLL yyyy');
   const dateAndTimePost = format(publishedAt, 'dd LL yyyy H mm');
@@ -33,6 +34,7 @@ export function Post({ author, content, publishedAt }: PostType) {
   }
 
   function handleChangeNewComment(event: ChangeEvent<HTMLTextAreaElement>) {
+    textComment.current!.setCustomValidity('');
     setNewComment(event.target.value);
   }
 
@@ -43,6 +45,12 @@ export function Post({ author, content, publishedAt }: PostType) {
 
     setComments(newCommentsOnPost);
   }
+
+  function handleNewCommentInvalid(event: InvalidEvent<HTMLTextAreaElement>) {
+    event?.target.setCustomValidity('This is required field!');
+  }
+
+  const isEmptyTextComment = newComment.length === 0;
 
   return (
     <article className={style.post}>
@@ -85,9 +93,14 @@ export function Post({ author, content, publishedAt }: PostType) {
           value={newComment}
           onChange={handleChangeNewComment}
           name='comment'
+          onInvalid={handleNewCommentInvalid}
+          required
+          ref={textComment}
         />
         <footer className={style.buttonpublish}>
-          <button type='submit'>Publish</button>
+          <button type='submit' disabled={isEmptyTextComment}>
+            Publish
+          </button>
         </footer>
       </form>
 
